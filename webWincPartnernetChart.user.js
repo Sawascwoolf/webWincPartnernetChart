@@ -30,7 +30,7 @@ GM_setValue('webWincPartnernetChartGlobalOptions', opt);
 //console.log(path);
 
 function homePage() {
-    var opt = GM_getValue('webWincPartnernetChartGlobalOptions');
+    var opt = GM_getValue('webWincPartnernetChartGlobalOptions', {});
 
     // Refresh the amzEndDateOption
 
