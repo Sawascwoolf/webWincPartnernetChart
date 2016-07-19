@@ -26,12 +26,9 @@ switch (path) {
         reportsPage();
         break;
 }
-GM_setValue('webWincPartnernetChartGlobalOptions', opt);
-//console.log(path);
 
 function homePage() {
-    var opt = GM_getValue('webWincPartnernetChartGlobalOptions', {});
-
+    var opt = GM_getValue('webWincPartnernetChartGlobalOptions',{});
     // Refresh the amzEndDateOption
 
     opt.amzEndDate = parseDateFromMiniReport('#mini-report .note');
@@ -41,6 +38,7 @@ function homePage() {
 
     div.html('<button class="webWinc" value="deleteTagsReport">Delete TagsReportData</button>');
     $('.webWinc').click(buttonClicked);
+GM_setValue('webWincPartnernetChartGlobalOptions', opt);
 }
 function reportsPage() {
     var reportsType = parseQueryString().reportType || "earningsReport";
@@ -54,7 +52,6 @@ function reportsPage() {
     }
 }
 function tagsReport() {
-    console.log("tagsReport");
     /*
      Initialize some variables
      */
@@ -74,6 +71,7 @@ function tagsReport() {
     }
 
 
+    
     /*
      Download new data if available
      */
@@ -85,7 +83,7 @@ function tagsReport() {
         div.html('Downloading data for ' + days + ' days. <br> Estimated Time Remaining: ' + days * 3 + ' seconds');
 
         downloadTagsReportSingleDay(currentDate);
-        return setTimeout(tagsReport, 300);
+        return setTimeout(tagsReport, 3000);
 
     }
 
@@ -110,7 +108,6 @@ function tagsReport() {
                     firstEntry = true;
                     for (var tag in opt.tagsReport.tags) {
                         if (obj[tag]) {
-                            //console.log(obj[tag]);
                             var earning = obj[tag].earnings;
                         } else {
                             var earning = 0;
@@ -156,11 +153,9 @@ function downloadTagsReportSingleDay(date) {
     var xml = data.responseText;
     var $xml = $(xml);
     var $details = $xml.find('OneTag');
-    //console.log($details);
     var objects = {};
     opt.tagsReport = opt.tagsReport || {};
     opt.tagsReport.tags = opt.tagsReport.tags || {};
-
     $details.each(function () {
         var $this = $(this);
         var tag = $this.attr('tag');
@@ -191,7 +186,6 @@ function downloadTagsReportSingleDay(date) {
     GM_setValue("webWincPartnernetChartGlobalOptions", opt);
     //return {date: date, tagData: objects};
 
-    //console.log(date);
 }
 function parseQueryString() {
     var urlParams = {};
@@ -230,7 +224,7 @@ function buttonClicked() {
     switch ($button.attr('value')) {
         case 'deleteTagsReport':
             GM_setValue('webWincPartnernetChartTagsReport', {});
-            var opt = GM_getValue('webWincPartnernetChartGlobalOptions');
+            var opt = GM_getValue('webWincPartnernetChartGlobalOptions',{});
             opt.tagsReport.date = null;
             GM_setValue('webWincPartnernetChartGlobalOptions', opt);
             break;
@@ -241,7 +235,6 @@ function buttonClicked() {
 
 }
 function stockChart(series, div) {
-    console.log("fired");
     // Create the chart
     div.highcharts('StockChart', {
         chart: {
@@ -306,6 +299,4 @@ function stockChart(series, div) {
         series: series,
 
     });
-    div.highcharts().reflow();
-
 }
